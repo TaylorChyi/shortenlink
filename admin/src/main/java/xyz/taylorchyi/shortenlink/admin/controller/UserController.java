@@ -34,7 +34,7 @@ public class UserController {
         return Results.success(result);
     }
 
-    @PostMapping("/api/shorten-link/v1/user/register")
+    @PostMapping("/api/shorten-link/v1/user")
     public Result<Void> register(@RequestBody UserRegisterRequestDTO userRegisterRequestDTO) {
         userService.register(userRegisterRequestDTO);
         return Results.success();
