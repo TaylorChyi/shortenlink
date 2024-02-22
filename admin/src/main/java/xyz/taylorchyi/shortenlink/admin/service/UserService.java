@@ -6,4 +6,6 @@ import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
 
 public interface UserService extends IService<UserDO> {
     UserResponseDTO getUserByUsername(String username);
+
+    Boolean doesUsernameExist(String username);
 }

@@ -28,4 +28,10 @@ public class UserController {
         UserResponseDTO result = userService.getUserByUsername(username);
         return Results.success(BeanUtil.toBean(result, UserWithSensitiveResponseDTO.class));
     }
+
+    @GetMapping("/api/shortenlink/v1/user/does-username-exist/{username}")
+    public Result<Boolean> doesUsernameExist(@PathVariable("username") String username) {
+        Boolean result = userService.doesUsernameExist(username);
+        return Results.success(result);
+    }
 }
