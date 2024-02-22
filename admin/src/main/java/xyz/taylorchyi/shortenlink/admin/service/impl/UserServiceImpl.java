@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.taylorchyi.shortenlink.admin.common.convention.exception.ClientException;
+import xyz.taylorchyi.shortenlink.admin.common.enums.errorcode.ClientErrorCode;
 import xyz.taylorchyi.shortenlink.admin.dao.entity.UserDO;
 import xyz.taylorchyi.shortenlink.admin.dao.mapper.UserMapper;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
@@ -19,7 +21,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
         UserDO userDO = baseMapper.selectOne(queryWrapper);
         if (userDO == null) {
-            return null;
+            throw new ClientException(ClientErrorCode.USER_DOES_NOT_EXIST);
         }
         UserResponseDTO result = new UserResponseDTO();
         BeanUtils.copyProperties(userDO, result);

@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.taylorchyi.shortenlink.admin.common.convention.exception.ClientException;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Result;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Results;
-import xyz.taylorchyi.shortenlink.admin.common.enums.errorcode.ClientErrorCode;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserWithSensitiveResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
@@ -22,22 +20,12 @@ public class UserController {
     @GetMapping("/api/shortenlink/v1/user/{username}")
     public Result<UserResponseDTO> getUserByUsername(@PathVariable("username") String username) {
         UserResponseDTO result = userService.getUserByUsername(username);
-        if (result == null) {
-            throw new ClientException(ClientErrorCode.USER_DOES_NOT_EXIST);
-        }
-        else {
-            return Results.success(result);
-        }
+        return Results.success(result);
     }
 
     @GetMapping("/api/shortenlink/v1/user/sensitive/{username}")
     public Result<UserWithSensitiveResponseDTO> getUserByUsernameWithSensitive(@PathVariable("username") String username) {
         UserResponseDTO result = userService.getUserByUsername(username);
-        if (result == null) {
-            throw new ClientException(ClientErrorCode.USER_DOES_NOT_EXIST);
-        }
-        else {
-            return Results.success(BeanUtil.toBean(result, UserWithSensitiveResponseDTO.class));
-        }
+        return Results.success(BeanUtil.toBean(result, UserWithSensitiveResponseDTO.class));
     }
 }
