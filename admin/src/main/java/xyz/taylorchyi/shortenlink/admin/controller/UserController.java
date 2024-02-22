@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Result;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Results;
 import xyz.taylorchyi.shortenlink.admin.dto.request.UserRegisterRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.UserUpdateRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserWithSensitiveResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
@@ -37,6 +38,12 @@ public class UserController {
     @PostMapping("/api/shorten-link/v1/user")
     public Result<Void> register(@RequestBody UserRegisterRequestDTO userRegisterRequestDTO) {
         userService.register(userRegisterRequestDTO);
+        return Results.success();
+    }
+
+    @PutMapping("/api/shorten-link/v1/user")
+    public Result<Void> update(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        userService.update(userUpdateRequestDTO);
         return Results.success();
     }
 }

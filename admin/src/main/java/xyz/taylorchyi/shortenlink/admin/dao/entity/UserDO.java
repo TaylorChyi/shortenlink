@@ -22,7 +22,7 @@ public class UserDO {
 
   @TableField(fill = FieldFill.INSERT)
   private Date createTime;
-  @TableField(fill = FieldFill.INSERT)
+  @TableField(fill = FieldFill.INSERT_UPDATE)
   private Date updateTime;
   @TableField(fill = FieldFill.INSERT)
   private long deleteFlag;

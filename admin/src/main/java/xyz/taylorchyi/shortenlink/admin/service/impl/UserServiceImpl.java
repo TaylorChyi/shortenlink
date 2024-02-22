@@ -16,6 +16,7 @@ import xyz.taylorchyi.shortenlink.admin.common.enums.errorcode.ClientErrorCode;
 import xyz.taylorchyi.shortenlink.admin.dao.entity.UserDO;
 import xyz.taylorchyi.shortenlink.admin.dao.mapper.UserMapper;
 import xyz.taylorchyi.shortenlink.admin.dto.request.UserRegisterRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.UserUpdateRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
 
@@ -67,5 +68,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         finally {
             rLock.unlock();
         }
+    }
+
+    @Override
+    public void update(UserUpdateRequestDTO userUpdateRequestDTO) {
+        // TODO verify the current user is the login user;
+        LambdaQueryWrapper<UserDO> updateWrapper = Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUsername, userUpdateRequestDTO.getUsername());
+        baseMapper.update(BeanUtil.toBean(userUpdateRequestDTO, UserDO.class), updateWrapper);
     }
 }
