@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.taylorchyi.shortenlink.admin.common.constant.RedisCacheConstant;
 import xyz.taylorchyi.shortenlink.admin.common.convention.exception.ClientException;
 import xyz.taylorchyi.shortenlink.admin.common.enums.errorcode.ClientErrorCode;
 import xyz.taylorchyi.shortenlink.admin.dao.entity.UserDO;
@@ -21,6 +24,7 @@ import xyz.taylorchyi.shortenlink.admin.service.UserService;
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
+    private final RedissonClient redissonClient;
 
     @Override
     public UserResponseDTO getUserByUsername(String username) {
@@ -46,10 +50,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (doesUsernameExist(userRegisterRequestDTO.getUsername())) {
             throw new ClientException(ClientErrorCode.USERNAME_ALREADY_EXISTS);
         }
-        int inserted = baseMapper.insert(BeanUtil.toBean(userRegisterRequestDTO, UserDO.class));
-        if (inserted < 1) {
-            throw new ClientException(ClientErrorCode.REGISTRATION_ERROR);
+        RLock rLock = redissonClient.getLock(RedisCacheConstant.LOCK_USER_REGISTER_KEY + userRegisterRequestDTO.getUsername());
+        try {
+            if ( rLock.tryLock() ) {
+                int inserted = baseMapper.insert(BeanUtil.toBean(userRegisterRequestDTO, UserDO.class));
+                if (inserted < 1) {
+                    throw new ClientException(ClientErrorCode.REGISTRATION_ERROR);
+                }
+                userRegisterCachePenetrationBloomFilter.add(userRegisterRequestDTO.getUsername());
+            }
+            // safety net strategy
+            else {
+                throw new ClientException(ClientErrorCode.USERNAME_ALREADY_EXISTS);
+            }
         }
-        userRegisterCachePenetrationBloomFilter.add(userRegisterRequestDTO.getUsername());
+        finally {
+            rLock.unlock();
+        }
     }
 }
