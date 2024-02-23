@@ -54,4 +54,10 @@ public class UserController {
         UserLoginResponseDTO result = userService.login(userLoginRequestDTO);
         return Results.success(result);
     }
+
+    @GetMapping("/api/shorten-link/v1/user/does-user-login")
+    public Result<Boolean> doesUserLogin(@RequestParam("token") String userLoginToken) {
+        Boolean result = userService.doesUserLogin(userLoginToken);
+        return Results.success(result);
+    }
 }

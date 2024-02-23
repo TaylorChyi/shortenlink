@@ -23,7 +23,10 @@ public enum ClientErrorCode implements IErrorCode {
 
     // Idempotency Errors
     IDEMPOTENT_TOKEN_MISSING("A000200", "Idempotent token is missing."),
-    IDEMPOTENT_TOKEN_INVALID("A000201", "Idempotent token is used or expired.");
+    IDEMPOTENT_TOKEN_INVALID("A000201", "Idempotent token is used or expired."),
+
+    // User Login Errors
+    USER_HAS_ALREADY_LOGGED_IN("A0003000", "User has already logged in.");
 
     private final String code;
     private final String message;

@@ -33,7 +33,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
     private final RedissonClient redissonClient;
-    private final StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate hasUserLoggedInRedisTemplate;
+    private final StringRedisTemplate loggedInuUserInfoRedisTemplate;
 
     @Override
     public UserResponseDTO getUserByUsername(String username) {
@@ -95,8 +96,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (userDO == null) {
             throw new ClientException(ClientErrorCode.USER_DOES_NOT_EXIST);
         }
-        String uuid = UUID.randomUUID().toString();
-        stringRedisTemplate.opsForValue().set(uuid, JSON.toJSONString(userDO), 30L, TimeUnit.MINUTES);
-        return new UserLoginResponseDTO(uuid);
+
+        Boolean hasUserLoggedIn = hasUserLoggedInRedisTemplate.hasKey(userLoginRequestDTO.getUsername());
+        if (hasUserLoggedIn != null && hasUserLoggedIn) {
+            throw new ClientException(ClientErrorCode.USER_HAS_ALREADY_LOGGED_IN);
+        }
+        else {
+            String uuid = UUID.randomUUID().toString();
+            hasUserLoggedInRedisTemplate.opsForValue().set(userLoginRequestDTO.getUsername(), uuid, 30L, TimeUnit.MINUTES);
+            loggedInuUserInfoRedisTemplate.opsForValue().set(uuid, JSON.toJSONString(userDO), 30L, TimeUnit.MINUTES);
+            return new UserLoginResponseDTO(uuid);
+        }
+    }
+
+    @Override
+    public Boolean doesUserLogin(String userLoginToken) {
+        return loggedInuUserInfoRedisTemplate.hasKey(userLoginToken);
     }
 }
