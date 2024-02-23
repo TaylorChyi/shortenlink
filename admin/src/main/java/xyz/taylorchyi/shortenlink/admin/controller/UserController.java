@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Result;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Results;
+import xyz.taylorchyi.shortenlink.admin.dto.request.UserLoginRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.request.UserRegisterRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.request.UserUpdateRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.UserLoginResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.UserWithSensitiveResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
@@ -45,5 +47,11 @@ public class UserController {
     public Result<Void> update(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
         userService.update(userUpdateRequestDTO);
         return Results.success();
+    }
+
+    @PostMapping("/api/shorten-link/v1/user/login")
+    public Result<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+        UserLoginResponseDTO result = userService.login(userLoginRequestDTO);
+        return Results.success(result);
     }
 }
