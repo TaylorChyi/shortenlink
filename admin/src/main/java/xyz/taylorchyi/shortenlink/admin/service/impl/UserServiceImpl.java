@@ -34,7 +34,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
     private final RedissonClient redissonClient;
     private final StringRedisTemplate hasUserLoggedInRedisTemplate;
-    private final StringRedisTemplate loggedInuUserInfoRedisTemplate;
+    private final StringRedisTemplate loggedInUserInfoRedisTemplate;
 
     @Override
     public UserResponseDTO getUserByUsername(String username) {
@@ -104,13 +104,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         else {
             String uuid = UUID.randomUUID().toString();
             hasUserLoggedInRedisTemplate.opsForValue().set(userLoginRequestDTO.getUsername(), uuid, 30L, TimeUnit.MINUTES);
-            loggedInuUserInfoRedisTemplate.opsForValue().set(uuid, JSON.toJSONString(userDO), 30L, TimeUnit.MINUTES);
+            loggedInUserInfoRedisTemplate.opsForValue().set(uuid, JSON.toJSONString(userDO), 30L, TimeUnit.MINUTES);
             return new UserLoginResponseDTO(uuid);
         }
     }
 
     @Override
     public Boolean doesUserLogin(String userLoginToken) {
-        return loggedInuUserInfoRedisTemplate.hasKey(userLoginToken);
+        return loggedInUserInfoRedisTemplate.hasKey(userLoginToken);
+    }
+
+    @Override
+    public Boolean logout(String userLoginToken) {
+        if (doesUserLogin(userLoginToken)) {
+            UserDO userDO = JSON.parseObject(loggedInUserInfoRedisTemplate.opsForValue().get(userLoginToken), UserDO.class);
+            if (userDO != null) {
+                Boolean doesDeleteUserLoginSession = hasUserLoggedInRedisTemplate.delete(userDO.getUsername());
+                Boolean doesDeleteUserLoginInfo = loggedInUserInfoRedisTemplate.delete(userLoginToken);
+                return doesDeleteUserLoginSession != null && doesDeleteUserLoginSession
+                        && doesDeleteUserLoginInfo != null && doesDeleteUserLoginInfo;
+            }
+            else {
+                throw new ClientException(ClientErrorCode.USER_LOG_IN_SESSION_EXPIRED);
+            }
+        }
+        else {
+            throw new ClientException(ClientErrorCode.USER_DID_NOT_LOG_IN);
+        }
     }
 }

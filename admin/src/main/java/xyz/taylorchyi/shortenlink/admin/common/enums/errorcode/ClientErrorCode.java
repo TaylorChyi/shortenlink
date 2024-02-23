@@ -26,7 +26,9 @@ public enum ClientErrorCode implements IErrorCode {
     IDEMPOTENT_TOKEN_INVALID("A000201", "Idempotent token is used or expired."),
 
     // User Login Errors
-    USER_HAS_ALREADY_LOGGED_IN("A0003000", "User has already logged in.");
+    USER_HAS_ALREADY_LOGGED_IN("A0003000", "User has already logged in."),
+    USER_DID_NOT_LOG_IN("A0003001", "User did not log in."),
+    USER_LOG_IN_SESSION_EXPIRED("A0003002", "User login session expired.");
 
     private final String code;
     private final String message;

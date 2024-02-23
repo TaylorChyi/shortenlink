@@ -60,4 +60,10 @@ public class UserController {
         Boolean result = userService.doesUserLogin(userLoginToken);
         return Results.success(result);
     }
+
+    @DeleteMapping("/api/shorten-link/v1/user")
+    public Result<Boolean> logout(@RequestParam("token") String userLoginToken) {
+        Boolean result = userService.logout(userLoginToken);
+        return Results.success(result);
+    }
 }
