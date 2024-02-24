@@ -1,4 +1,4 @@
-package xyz.taylorchyi.shortenlink.admin.dto.request;
+package xyz.taylorchyi.shortenlink.admin.dto.request.shortenlink;
 
 import lombok.Data;
 

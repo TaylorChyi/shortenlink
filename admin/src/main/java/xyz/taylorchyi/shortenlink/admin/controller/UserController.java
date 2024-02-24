@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Result;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Results;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserLoginRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserRegisterRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserUpdateRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.response.UserLoginResponseDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.response.UserWithSensitiveResponseDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserLoginRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserRegisterRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserUpdateRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.user.UserLoginResponseDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.user.UserResponseDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.user.UserWithSensitiveResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
 
 @RestController

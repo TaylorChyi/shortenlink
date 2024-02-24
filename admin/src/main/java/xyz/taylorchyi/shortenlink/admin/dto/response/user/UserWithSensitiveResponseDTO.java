@@ -1,11 +1,11 @@
-package xyz.taylorchyi.shortenlink.admin.dto.request;
+package xyz.taylorchyi.shortenlink.admin.dto.response.user;
 
 import lombok.Data;
 
 @Data
-public class UserRegisterRequestDTO {
+public class UserWithSensitiveResponseDTO {
+    private long id;
     private String username;
-    private String password;
     private String realName;
     private String phone;
     private String email;

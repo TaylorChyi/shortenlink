@@ -1,9 +1,9 @@
-package xyz.taylorchyi.shortenlink.admin.dto.request;
+package xyz.taylorchyi.shortenlink.admin.dto.request.user;
 
 import lombok.Data;
 
 @Data
-public class UserUpdateRequestDTO {
+public class UserRegisterRequestDTO {
     private String username;
     private String password;
     private String realName;

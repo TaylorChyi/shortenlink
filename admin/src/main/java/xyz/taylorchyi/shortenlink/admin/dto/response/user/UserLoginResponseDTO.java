@@ -1,4 +1,4 @@
-package xyz.taylorchyi.shortenlink.admin.dto.response;
+package xyz.taylorchyi.shortenlink.admin.dto.response.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

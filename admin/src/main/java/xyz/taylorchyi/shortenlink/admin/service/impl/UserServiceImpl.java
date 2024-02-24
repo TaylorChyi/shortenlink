@@ -18,11 +18,11 @@ import xyz.taylorchyi.shortenlink.admin.common.convention.exception.ClientExcept
 import xyz.taylorchyi.shortenlink.admin.common.enums.errorcode.ClientErrorCode;
 import xyz.taylorchyi.shortenlink.admin.dao.entity.UserDO;
 import xyz.taylorchyi.shortenlink.admin.dao.mapper.UserMapper;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserLoginRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserRegisterRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.request.UserUpdateRequestDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.response.UserLoginResponseDTO;
-import xyz.taylorchyi.shortenlink.admin.dto.response.UserResponseDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserLoginRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserRegisterRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.user.UserUpdateRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.user.UserLoginResponseDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.response.user.UserResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.UserService;
 
 import java.util.concurrent.TimeUnit;

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Result;
 import xyz.taylorchyi.shortenlink.admin.common.convention.result.Results;
-import xyz.taylorchyi.shortenlink.admin.dto.request.ShortenLinkGroupSaveRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.shortenlink.ShortenLinkGroupSaveRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.service.GroupService;
 
 @RestController

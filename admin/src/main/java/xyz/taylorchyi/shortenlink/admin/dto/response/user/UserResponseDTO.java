@@ -1,4 +1,4 @@
-package xyz.taylorchyi.shortenlink.admin.dto.response;
+package xyz.taylorchyi.shortenlink.admin.dto.response.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
