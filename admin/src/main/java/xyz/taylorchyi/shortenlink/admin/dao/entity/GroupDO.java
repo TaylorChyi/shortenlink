@@ -19,5 +19,5 @@ public class GroupDO extends BaseDO {
   private String groupId;
   private String name;
   private String createUsername;
-
+  private Integer sortOrder;
 }
