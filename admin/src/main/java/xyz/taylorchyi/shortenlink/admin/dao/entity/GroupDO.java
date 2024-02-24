@@ -9,14 +9,14 @@ import lombok.NoArgsConstructor;
 import xyz.taylorchyi.shortenlink.admin.common.database.BaseDO;
 
 @Data
-@TableName("group")
+@TableName("shorten_link_group")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class GroupDO extends BaseDO {
 
   private long id;
-  private long groupId;
+  private String groupId;
   private String name;
   private String createUsername;
 
