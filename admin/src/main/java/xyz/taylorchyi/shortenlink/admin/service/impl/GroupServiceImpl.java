@@ -2,12 +2,16 @@ package xyz.taylorchyi.shortenlink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import groovy.util.logging.Slf4j;
 import org.springframework.stereotype.Service;
+import xyz.taylorchyi.shortenlink.admin.common.business.user.UserContext;
 import xyz.taylorchyi.shortenlink.admin.dao.entity.GroupDO;
 import xyz.taylorchyi.shortenlink.admin.dao.mapper.GroupMapper;
+import xyz.taylorchyi.shortenlink.admin.dto.request.shortenlink.ShortenLinkGroupSortRequestDTO;
+import xyz.taylorchyi.shortenlink.admin.dto.request.shortenlink.ShortenLinkGroupUpdateRequestDTO;
 import xyz.taylorchyi.shortenlink.admin.dto.response.shortenlink.ShortenLinkGroupResponseDTO;
 import xyz.taylorchyi.shortenlink.admin.service.GroupService;
 import xyz.taylorchyi.shortenlink.admin.util.RandomGenerator;
@@ -24,8 +28,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
          do {
             groupId = RandomGenerator.generateSixRandomCharString();
         } while(isGroupIdRepeated(groupId));
+
         GroupDO groupDO = GroupDO.builder()
                 .groupId(groupId)
+                .createUsername(UserContext.getUsername())
                 .name(groupName)
                 .sortOrder(0)
                 .build();
@@ -35,9 +41,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     @Override
     public List<ShortenLinkGroupResponseDTO> listGroup() {
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
-                                                    .eq(GroupDO::getDeleteFlag, 0)
-                                                    // TODO set search condition : create username;
-                                                    .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
+            .eq(GroupDO::getDeleteFlag, 0)
+            .eq(GroupDO::getCreateUsername, UserContext.getUsername())
+            .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
 
         List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(groupDOList, ShortenLinkGroupResponseDTO.class);
@@ -46,11 +52,52 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     private boolean isGroupIdRepeated (String groupId) {
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGroupId, groupId)
-                // TODO set create username;
+                .eq(GroupDO::getCreateUsername, UserContext.getUsername())
                 .eq(GroupDO::getCreateUsername, null);
 
         GroupDO hasGroupFlag = baseMapper.selectOne(queryWrapper);
 
         return hasGroupFlag != null;
+    }
+
+    @Override
+    public void updateGroup(ShortenLinkGroupUpdateRequestDTO shortenLinkGroupUpdateRequestDTO) {
+        LambdaQueryWrapper<GroupDO> updateWrapper = Wrappers.lambdaQuery(GroupDO.class)
+                .eq(GroupDO::getCreateUsername, UserContext.getUsername())
+                .eq(GroupDO::getGroupId, shortenLinkGroupUpdateRequestDTO.getGroupId())
+                .eq(GroupDO::getDeleteFlag, 0);
+
+        GroupDO groupDO = new GroupDO();
+        groupDO.setName(shortenLinkGroupUpdateRequestDTO.getName());
+        baseMapper.update(groupDO, updateWrapper);
+    }
+
+    @Override
+    public void deleteGroup(String groupID) {
+        LambdaQueryWrapper<GroupDO> deleteWrapper = Wrappers.lambdaQuery(GroupDO.class)
+                .eq(GroupDO::getGroupId, groupID)
+                .eq(GroupDO::getDeleteFlag, 0);
+
+        if (deleteWrapper != null) {
+            GroupDO groupDO = new GroupDO();
+            groupDO.setDeleteFlag(1);
+            baseMapper.update(groupDO, deleteWrapper);
+        }
+    }
+
+    @Override
+    public void sortGroup(List<ShortenLinkGroupSortRequestDTO> shortenLinkGroupSortRequestDTOList) {
+        shortenLinkGroupSortRequestDTOList.forEach(each -> {
+            GroupDO groupDO = GroupDO.builder()
+                    .groupId(each.getGroupId())
+                    .build();
+
+            LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
+                    .eq(GroupDO::getCreateUsername, UserContext.getUsername())
+                    .eq(GroupDO::getGroupId, each.getGroupId())
+                    .eq(GroupDO::getDeleteFlag, 0);
+
+            baseMapper.update(groupDO, updateWrapper);
+        });
     }
 }
